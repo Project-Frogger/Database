@@ -1,10 +1,10 @@
-/*
+﻿/*
 Принимает день и месяц проведения мероприятия,
 возвращает дату проведения (типа данных date)
 */
-DROP FUNCTION IF EXISTS `ufaile8o_parser`.`f_date`;
+DROP FUNCTION IF EXISTS `frogger`.`f_date`;
 
-CREATE DEFINER=`ufaile8o_parser`@`%` FUNCTION `ufaile8o_parser`.`f_date`(`_day` int,`_month` text) RETURNS date
+CREATE DEFINER=`rmadmin`@`%` FUNCTION `frogger`.`f_date`(`_day` int,`_month` text) RETURNS date
 BEGIN
 	DECLARE _eng varchar(50);
 	DECLARE _rus varchar(50);
@@ -21,12 +21,20 @@ BEGIN
 	IF done THEN
 	  LEAVE the_loop;
 	END IF;
-	set `_month`=replace(`_month`,_rus,_eng);
+	set `_month` = replace(lower(`_month`),_rus,_eng);
 	END LOOP the_loop;
 
-	SET `_year` = IF(month(CURDATE()) > month(str_to_date(`_month`,'%M')), year(CURDATE()) + 1, year(CURDATE()));
-	SET `_date` = str_to_date(CONCAT(CONVERT(`_day`, CHAR), ' ', `_month`, ' ', CONVERT(`_year`, CHAR)),'%d %M %Y');
+	SET `_year` = IF(
+					month(CURDATE()) > month(str_to_date(concat('1', `_month`, '1000'),'%d %M %Y')),
+					year(CURDATE()) + 1,
+					year(CURDATE())
+				);
+	SET `_date` = str_to_date(CONCAT(CONVERT(`_day`, CHAR), `_month`, CONVERT(`_year`, CHAR)),'%d %M %Y');
 
 	CLOSE cur;
 	RETURN `_date`;
-END
+END;
+
+/* Проверка работоспособности */
+SELECT `frogger`.`f_date`(31, 'мая');
+SELECT `frogger`.`f_date`(31, 'Октября');

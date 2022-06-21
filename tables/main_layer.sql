@@ -117,7 +117,7 @@ CREATE TABLE `f_current` (
   `src_id`         INT,
   `created_at`     TIMESTAMP      NOT NULL,
   `post_id`        INT,
-  `author_id`      INT            NOT NULL,
+  `author_id`      INT,
   `parent_id`      INT            NOT NULL,
   
   PRIMARY KEY (`event_id`),
@@ -218,12 +218,6 @@ CREATE TABLE `m_category_event` (
   CONSTRAINT `fk_category_event_current_event`
   FOREIGN KEY (`event_id`) 
   REFERENCES `f_current`(`event_id`)
-    ON UPDATE CASCADE
-    ON DELETE CASCADE,
-    
-  CONSTRAINT `fk_category_event_bin_event`
-  FOREIGN KEY (`event_id`) 
-  REFERENCES `f_bin`(`event_id`)
     ON UPDATE CASCADE
     ON DELETE CASCADE
 );
